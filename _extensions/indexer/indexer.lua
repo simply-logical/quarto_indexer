@@ -2,10 +2,22 @@ INDEXERSETUP = false
 
 function ensureLatexDeps()
   quarto.doc.use_latex_package('makeidx')
-  quarto.doc.include_text('in-header', '\\makeindex')
+  quarto.doc.include_text(
+    'in-header',
+    '\\makeindex')
+  quarto.doc.include_text(
+    'in-header',
+    '\\definecolor{emphcolour}{RGB}{204, 51, 51}')
 end
 
 function ensureHtmlDeps()
+  quarto.doc.include_text(
+    'in-header',
+    [[<style>
+    .indexer-emph {
+      color: rgb(204, 51, 51);
+    }
+    </style>]])
 end
 
 function indexerSetup()
@@ -29,7 +41,10 @@ function indexer_print()  -- args, kwargs, meta
   if quarto.doc.is_format('pdf') then
     return pandoc.RawBlock('tex', '\\printindex')
   elseif quarto.doc.is_format('html') then
-    return pandoc.Str('Extension *indexer*: TODO: implement \\printindex')
+    return {
+      pandoc.Header(1, 'Index'),
+      pandoc.Para('Extension *indexer*: TODO: implement printing the index.')
+    }
   end
 end
 
@@ -52,11 +67,14 @@ function indexer_add_term(args, kwargs, meta)
   end
 
   if quarto.doc.is_format('pdf') then
-    return pandoc.RawBlock('tex', '\\index{' .. args[1] .. '}')
+    return pandoc.RawBlock(
+      'tex',
+      '\\index{' .. args[1] .. '}'
+      .. '\\textcolor{emphcolour}{\\emph{' .. args[1] .. '}}')
   elseif quarto.doc.is_format('html') then
     return pandoc.RawInline(
       'html',
-      '<i style="color: rgb(204, 51, 51)">' .. args[1] .. '</i>'
+      '<i class=indexer-emph>' .. args[1] .. '</i>'
     )
   end
 end

@@ -6,6 +6,4 @@ title: "Indexer Example"
 
 Some text with this {{< indexer_add_term term >}} indexed.
 
-## Index
-
 {{< indexer_print >}}
