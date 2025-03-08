@@ -1,0 +1,11 @@
+---
+title: "Indexer Example"
+---
+
+## Some Section
+
+Some text with this {{< indexer_add_term term >}} indexed.
+
+## Index
+
+{{< indexer_print >}}
