@@ -5,3 +5,4 @@ quarto-required: ">=1.6.0"
 contributes:
   shortcodes:
     - indexer.lua
+    - definer.lua

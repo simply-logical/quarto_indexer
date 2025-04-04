@@ -2,8 +2,26 @@
 title: "Indexer Example"
 ---
 
-## Some Section
+## Basic Indexing
 
-Some text with this {{< indexer_add_term term >}} indexed.
+Some text with this *term* {{< indexer_add_term term >}} indexed.
+
+or
+
+Other text with this *term* {{< indexer add term >}} indexed.
+
+## Index a Term and Display Text
+
+Display {{< indexer add other idxdisplay='*this* and that' >}} words, but index it under "other".
+
+or
+
+Display {{< indexer_add_term other idxdisplay='*this* and that' >}} words, but index it under "other".
+
+## Printing the Index
 
 {{< indexer_print >}}
+
+or
+
+{{< indexer print >}}
