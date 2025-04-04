@@ -52,3 +52,18 @@ See [example.qmd](example.qmd) for a minimal example.
     idxstyle=mystyle
 >}}
 ```
+
+## TODO
+
+- [ ] An extension for *assigning index terms to parent elements*
+      (e.g., section, example box)
+- [ ] An extension for *custom collection lists*
+      (one command for collecting terms and another for displaying their list)
+- [ ] An extension for custom boxes (e.g., background, exercise);
+      maybe have paired boxes (e.g., linked exercise and solution boxes)
+- [ ] An extension for custom (numbered) environments
+      (e.g., definition, theorem, example)
+- [ ] An extension for *assigning custom tags to parent elements*
+      (e.g., `difficulty:easy`, `difficulty:medium`, `difficulty:hard`
+      to [sub]sections, exercises, etc.);
+      maybe have lists/hierarchy of tags
