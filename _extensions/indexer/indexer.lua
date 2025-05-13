@@ -6,7 +6,7 @@ local INDEXER = {}
 -- Has indexer already been set up
 INDEXERSETUP = false
 -- What named arguments are allowed in the indexer
-ALLOWEDTERMS = {'idxdisplay', 'idxsortkey', 'idxsee'}
+ALLOWEDTERMS = {'idxdisplay', 'idxsortkey', 'idxsee', 'idxnesting'}
 
 -- ~~~~~~~~~~ setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
@@ -76,7 +76,7 @@ function indexer_add_term(args, kwargs, meta)
   end
 
   if quarto.doc.is_format('pdf') or quarto.doc.is_format('latex') then
-    collector = {}
+    local collector = {}
 
     -- handle idxdisplay if it's provided
     if type(kwargs['idxdisplay']) == 'string' then
@@ -100,6 +100,8 @@ function indexer_add_term(args, kwargs, meta)
       assert(helper.tableLength(sortkey) == 1)
       assert(sortkey[1].t == 'Para')
       idxsortkey = sortkey[1].content
+    else
+      idxsortkey = nil
     end
 
     -- handle idxsee if it's provided
@@ -109,6 +111,19 @@ function indexer_add_term(args, kwargs, meta)
       assert(helper.tableLength(see) == 1)
       assert(see[1].t == 'Para')
       idxsee = see[1].content
+    else
+      idxsee = nil
+    end
+
+    -- handle idxnesting if it's provided
+    if type(kwargs['idxnesting']) == 'string'
+       and kwargs['idxnesting'] ~= '' then
+      local nesting = pandoc.read(kwargs['idxnesting'], 'markdown').blocks
+      assert(helper.tableLength(nesting) == 1)
+      assert(nesting[1].t == 'Para')
+      idxnesting = nesting[1].content
+    else
+      idxnesting = nil
     end
 
     -- open the tag
@@ -118,6 +133,12 @@ function indexer_add_term(args, kwargs, meta)
     if idxsortkey ~= nil then
       helper.embedTable(contents, idxsortkey)
       table.insert(contents, pandoc.RawInline('tex', '@'))
+    end
+
+    -- inject the term nesting
+    if idxnesting ~= nil then
+      helper.embedTable(contents, idxnesting)
+      table.insert(contents, pandoc.RawInline('tex', '!'))
     end
 
     -- inject the index term

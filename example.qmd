@@ -44,11 +44,19 @@ Display {{< indexer_add_term '$\delta$-other' idxdisplay='' idxsortkey='*delta-o
 
 ## See Other Term
 
-Display {{< indexer add this idxdisplay='' idxsee='that' >}} word, and add *see* *that* word.
+Display {{< indexer add this idxdisplay='' idxsee='that' >}} word, and add *see* *that* {{< indexer add that >}} word.
 
 or
 
-Display {{< indexer_add_term this idxdisplay='' idxsee='that' >}} word, and add *see* *that* word.
+Display {{< indexer_add_term this idxdisplay='' idxsee='that' >}} word, and add *see* *that* {{< indexer add that >}} word.
+
+## Term Nesting
+
+Display {{< indexer add this idxdisplay='' idxnesting='random ! words' >}} word, and *nest* it under *words $\rightarrow$ random $\rightarrow$ this*.
+
+or
+
+Display {{< indexer_add_term this idxdisplay='' idxnesting='random ! words' >}} word, and *nest* it under *words $\rightarrow$ random $\rightarrow$ this*.
 
 ## Printing the Index
 
