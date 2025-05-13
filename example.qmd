@@ -58,6 +58,14 @@ or
 
 Display {{< indexer_add_term this idxdisplay='' idxnesting='random ! words' >}} word, and *nest* it under *words $\rightarrow$ random $\rightarrow$ this*.
 
+## Term Suffix
+
+Display {{< indexer add Surname idxdisplay='Firstname Surname' idxnesting='names' idxsuffix='Firstnme' >}}, and index it as *Surname* nested under *names*, with a suffix *Firstname*.
+
+or
+
+Display {{< indexer_add_term Surname idxdisplay='Firstname Surname' idxnesting='names' idxsuffix='Firstnme' >}}, and index it as *Surname* nested under *names*, with a suffix *Firstname*.
+
 ## Printing the Index
 
 {{< indexer_print >}}
