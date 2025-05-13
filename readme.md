@@ -15,6 +15,11 @@ If you're using version control, you will want to check-in this directory.
 
 See [example.qmd](example.qmd) for a minimal example.
 
+LaTeX conversion can be done with:
+```bash
+quarto render example.qmd --to latex
+```
+
 ## Syntax
 
 ### `indexer`
@@ -53,6 +58,10 @@ See [example.qmd](example.qmd) for a minimal example.
 >}}
 ```
 
+## Reference
+
+- See the AST [documentation][ast].
+
 ## TODO
 
 - [ ] An extension for *assigning index terms to parent elements*
@@ -67,3 +76,5 @@ See [example.qmd](example.qmd) for a minimal example.
       (e.g., `difficulty:easy`, `difficulty:medium`, `difficulty:hard`
       to [sub]sections, exercises, etc.);
       maybe have lists/hierarchy of tags
+
+[ast]: https://hackage.haskell.org/package/pandoc-types-1.23.1/docs/Text-Pandoc-Definition.html

@@ -8,7 +8,7 @@ INDEXERSETUP = false
 -- What named arguments are allowed in the indexer
 ALLOWEDTERMS = {'idxdisplay'}
 
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
+-- ~~~~~~~~~~ setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
 local function ensureLatexDeps()
   quarto.doc.use_latex_package('makeidx')
@@ -41,7 +41,7 @@ local function indexerSetup()
   end
 end
 
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
+-- ~~~~~~~~~~ index printing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
 function indexer_print()  -- args, kwargs, meta
   indexerSetup()
@@ -58,6 +58,8 @@ function indexer_print()  -- args, kwargs, meta
 end
 INDEXER.indexer_print = indexer_print
 
+-- ~~~~~~~~~~ index indexing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
+
 function indexer_add_term(args, kwargs, meta) 
   indexerSetup()
 
@@ -73,18 +75,36 @@ function indexer_add_term(args, kwargs, meta)
           .. helper.tableLength(meta) .. ' given.')
   end
 
-  if quarto.doc.is_format('pdf') then
+  if quarto.doc.is_format('pdf') or quarto.doc.is_format('latex') then
     collector = {}
 
-    if type(kwargs['idxdisplay']) == 'string'
-       and kwargs['idxdisplay'] ~= '' then
-      display = pandoc.read(kwargs['idxdisplay'], 'markdown').blocks
+    -- handle idxdisplay if it's provided
+    if type(kwargs['idxdisplay']) == 'string' then
+      -- reuse the indexed term
+      if kwargs['idxdisplay'] == '' then
+        text_to_display = args[1]
+      -- use the bespoke term
+      else
+        text_to_display = kwargs['idxdisplay']
+      end
+      display = pandoc.read(text_to_display, 'markdown').blocks
       assert(helper.tableLength(display) == 1)
       assert(display[1].t == 'Para')
       table.insert(collector, display[1])  -- .content
     end
 
-    table.insert(collector, pandoc.RawBlock('tex', '\\index{' .. args[1] .. '}'))
+    contents = {pandoc.RawInline('tex', '\\index{')}
+    --
+    index = pandoc.read(args[1], 'markdown').blocks
+    assert(helper.tableLength(index) == 1)
+    assert(index[1].t == 'Para')
+    for _, v in ipairs(index[1].content) do
+      table.insert(contents, v)
+    end
+    --
+    table.insert(contents, pandoc.RawInline('tex', '}'))
+
+    table.insert(collector, pandoc.Para(contents))
 
     return collector
   elseif quarto.doc.is_format('html') then
@@ -97,7 +117,7 @@ function indexer_add_term(args, kwargs, meta)
 end
 INDEXER.indexer_add_term = indexer_add_term
 
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
+-- ~~~~~~~~~~ indexer callout mapping ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
 function indexer(args, kwargs, meta)
   indexerSetup()
