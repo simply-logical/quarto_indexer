@@ -68,13 +68,26 @@ Display {{< indexer_add_term Surname idxdisplay='Firstname Surname' idxnesting='
 
 ## Styling Index
 
-Display {{< indexer add OtherSurname idxdisplay='OtherFirstname OtherSurname' idxnesting='names' idxsuffix='OtherFirstnme' idxstyle=defsty >}}, and index it as *OtherSurname* nested under *names*, with a suffix *OtherFirstname*;
-style it with the default style (`defsty`).
+Display {{< indexer add OtherSurname idxdisplay='OtherFirstname OtherSurname' idxnesting='names' idxsuffix='OtherFirstnme' idxstyle=defidxsty >}}, and index it as *OtherSurname* nested under *names*, with a suffix *OtherFirstname*;
+style it with the default style (`defidxsty`).
 
 or
 
-Display {{< indexer_add_term OtherSurname idxdisplay='OtherFirstname OtherSurname' idxnesting='names' idxsuffix='OtherFirstnme' idxstyle=defsty >}}, and index it as *OtherSurname* nested under *names*, with a suffix *OtherFirstname*;
-style it with the default style (`defsty`).
+Display {{< indexer_add_term OtherSurname idxdisplay='OtherFirstname OtherSurname' idxnesting='names' idxsuffix='OtherFirstnme' idxstyle=defidxsty >}}, and index it as *OtherSurname* nested under *names*, with a suffix *OtherFirstname*;
+style it with the default style (`defidxsty`).
+
+---
+
+## Basic Defining
+
+Define {{< definer *this* >}} term.
+
+Define {{< definer *this* defstyle='defdefsty' >}} term with the default style: `defdefsty`.
+
+Define {{< definer *this* defstyle='defdefsty' defindex='' >}} term with the default style (`defdefsty`) and index it as such.
+
+Now pass some options to the indexer.
+Define {{< definer *this* defstyle='defdefsty' defindex='custom' idxnesting='def ! inition' >}} term with the default style (`defdefsty`) and index it as such.
 
 ## Printing the Index
 

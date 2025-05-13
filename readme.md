@@ -38,6 +38,9 @@ quarto render example.qmd --to latex
 >}}
 ```
 
+NOTE: if you'd like to display the same term as the one being indexed,
+use `idxdisplay=''` (or repeat the term `idxdisplay='term'`).
+
 ### `definer`
 
 ```qmd
@@ -45,7 +48,6 @@ quarto render example.qmd --to latex
     'term to be defined'
 
     <!-- definer optional parameters -->
-    defref='def:my-def-label'
     defstyle=mystyle
     defindex='term to be indexed'
 
@@ -57,6 +59,9 @@ quarto render example.qmd --to latex
     idxstyle=mystyle
 >}}
 ```
+
+NOTE: if you'd like to index the same term as the one being displayed,
+use `defindex=''` (or repeat the term `defindex='term'`).
 
 ## Reference
 

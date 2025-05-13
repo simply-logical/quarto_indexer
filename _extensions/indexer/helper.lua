@@ -94,4 +94,14 @@ local function embedTable(baseTable, tableToEmbed)
 end
 HELPER.embedTable = embedTable
 
+-- Make a shallow copy of a table
+function shallowCopy(_table)
+  local copy = {}
+  for k, v in pairs(_table) do
+    copy[k] = v
+  end
+  return copy
+end
+HELPER.shallowCopy = shallowCopy
+
 return HELPER

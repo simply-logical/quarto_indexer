@@ -20,7 +20,7 @@ local function ensureLatexDeps()
     '\\makeindex')
   quarto.doc.include_text(
     'in-header',
-    '\\providecommand{\\defsty}{} \\renewcommand{\\defsty}[1]{\\textcolor{red!50}{\\textbf{#1}}}')
+    '\\providecommand{\\defidxsty}{} \\renewcommand{\\defidxsty}[1]{\\textcolor{red!50}{\\textbf{#1}}}')
 end
 
 local function ensureHtmlDeps()
@@ -35,7 +35,7 @@ end
 
 local function indexerSetup()
   if not INDEXERSETUP then
-    if quarto.doc.is_format('pdf') then
+    if quarto.doc.is_format('pdf') or quarto.doc.is_format('latex') then
       ensureLatexDeps()
     elseif quarto.doc.is_format('html') then
       ensureHtmlDeps()
@@ -66,12 +66,12 @@ INDEXER.indexer_print = indexer_print
 
 -- ~~~~~~~~~~ index indexing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
-function indexer_add_term(args, kwargs, meta) 
+function indexer_add_term(args, kwargs, meta)
   indexerSetup()
 
-  if #args ~= 1 then
+  if helper.tableLength(args) ~= 1 then
     error('Extension *indexer*: *indexer_add_term* expects only 1 argument; '
-          .. #args .. ' given.')
+          .. helper.tableLength(args) .. ' given.')
   end
 
   helper.validateTableKeys(ALLOWEDTERMS, kwargs)
@@ -93,7 +93,7 @@ function indexer_add_term(args, kwargs, meta)
       else
         text_to_display = kwargs['idxdisplay']
       end
-      display = pandoc.read(text_to_display, 'markdown').blocks
+      local display = pandoc.read(text_to_display, 'markdown').blocks
       assert(helper.tableLength(display) == 1)
       assert(display[1].t == 'Para')
       table.insert(collector, display[1])  -- .content
@@ -146,10 +146,13 @@ function indexer_add_term(args, kwargs, meta)
     -- handle idxstyle if it's provided
     if type(kwargs['idxstyle']) == 'string'
        and kwargs['idxstyle'] ~= '' then
+      --[[
       local style = pandoc.read(kwargs['idxstyle'], 'markdown').blocks
       assert(helper.tableLength(style) == 1)
       assert(style[1].t == 'Para')
       idxstyle = style[1].content
+      ]]--
+      idxstyle = pandoc.RawInline('latex', kwargs['idxstyle'])
     else
       idxstyle = nil
     end
@@ -203,10 +206,14 @@ function indexer_add_term(args, kwargs, meta)
     return collector
   elseif quarto.doc.is_format('html') then
     -- TODO: implement
-    return pandoc.RawInline(
-      'html',
-      '<div class=indexer>' .. args[1] .. '</div>'
-    )
+    local collector = {}
+    table.insert(collector, pandoc.RawBlock('html', '<div class=indexer>'))
+    local display = pandoc.read(args[1], 'markdown').blocks
+    assert(helper.tableLength(display) == 1)
+    assert(display[1].t == 'Para')
+    table.insert(collector, display[1])
+    table.insert(collector, pandoc.RawBlock('html', '</div>'))
+    return collector
   end
 end
 INDEXER.indexer_add_term = indexer_add_term
@@ -216,7 +223,7 @@ INDEXER.indexer_add_term = indexer_add_term
 function indexer(args, kwargs, meta)
   indexerSetup()
 
-  if #args <= 0 then
+  if helper.tableLength(args) <= 0 then
     error('Extension *indexer*: *indexer* no argument given.')
   end
 
