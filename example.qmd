@@ -36,11 +36,19 @@ Display {{< indexer_add_term 'other *compound*' idxdisplay='*this* and that' >}}
 
 ## Custom Index SortKey
 
-Display {{< indexer add '$\delta$-other' idxsortkey='delta-other' >}} words, but use "delta-other" as the *sortkey*.
+Display {{< indexer add '$\delta$-other' idxdisplay='' idxsortkey='delta-other' >}} words, but use "delta-other" as the *sortkey*.
 
 or
 
-Display {{< indexer_add_term '$\delta$-other' idxsortkey='*delta-other*' >}} words, but use "*delta-other*" as the *sortkey*.
+Display {{< indexer_add_term '$\delta$-other' idxdisplay='' idxsortkey='*delta-other*' >}} words, but use "*delta-other*" as the *sortkey*.
+
+## See Other Term
+
+Display {{< indexer add this idxdisplay='' idxsee='that' >}} word, and add *see* *that* word.
+
+or
+
+Display {{< indexer_add_term this idxdisplay='' idxsee='that' >}} word, and add *see* *that* word.
 
 ## Printing the Index
 

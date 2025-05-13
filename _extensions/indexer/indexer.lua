@@ -6,7 +6,7 @@ local INDEXER = {}
 -- Has indexer already been set up
 INDEXERSETUP = false
 -- What named arguments are allowed in the indexer
-ALLOWEDTERMS = {'idxdisplay', 'idxsortkey'}
+ALLOWEDTERMS = {'idxdisplay', 'idxsortkey', 'idxsee'}
 
 -- ~~~~~~~~~~ setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
@@ -102,6 +102,15 @@ function indexer_add_term(args, kwargs, meta)
       idxsortkey = sortkey[1].content
     end
 
+    -- handle idxsee if it's provided
+    if type(kwargs['idxsee']) == 'string'
+       and kwargs['idxsee'] ~= '' then
+      local see = pandoc.read(kwargs['idxsee'], 'markdown').blocks
+      assert(helper.tableLength(see) == 1)
+      assert(see[1].t == 'Para')
+      idxsee = see[1].content
+    end
+
     -- open the tag
     contents = {pandoc.RawInline('tex', '\\index{')}
 
@@ -116,6 +125,13 @@ function indexer_add_term(args, kwargs, meta)
     assert(helper.tableLength(index) == 1)
     assert(index[1].t == 'Para')
     helper.embedTable(contents, index[1].content)
+
+    -- inject the see term
+    if idxsee ~= nil then
+      table.insert(contents, pandoc.RawInline('tex', '|see{'))
+      helper.embedTable(contents, idxsee)
+      table.insert(contents, pandoc.RawInline('tex', '}'))
+    end
 
     -- close the tag
     table.insert(contents, pandoc.RawInline('tex', '}'))
