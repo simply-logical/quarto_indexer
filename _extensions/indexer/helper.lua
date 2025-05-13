@@ -80,4 +80,18 @@ local function validateTableKeys(allowedKeys, _table)
 end
 HELPER.validateTableKeys = validateTableKeys
 
+-- Inject elements from one table into another
+local function embedTable(baseTable, tableToEmbed)
+  if tableLength(tableToEmbed) == 0 then
+    return baseTable
+  end
+
+  for _, v in ipairs(tableToEmbed) do
+    table.insert(baseTable, v)
+  end
+
+  return baseTable
+end
+HELPER.embedTable = embedTable
+
 return HELPER

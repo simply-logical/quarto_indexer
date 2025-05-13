@@ -6,7 +6,7 @@ local INDEXER = {}
 -- Has indexer already been set up
 INDEXERSETUP = false
 -- What named arguments are allowed in the indexer
-ALLOWEDTERMS = {'idxdisplay'}
+ALLOWEDTERMS = {'idxdisplay', 'idxsortkey'}
 
 -- ~~~~~~~~~~ setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
 
@@ -93,17 +93,34 @@ function indexer_add_term(args, kwargs, meta)
       table.insert(collector, display[1])  -- .content
     end
 
+    -- handle idxsortkey if it's provided
+    if type(kwargs['idxsortkey']) == 'string'
+       and kwargs['idxsortkey'] ~= '' then
+      local sortkey = pandoc.read(kwargs['idxsortkey'], 'markdown').blocks
+      assert(helper.tableLength(sortkey) == 1)
+      assert(sortkey[1].t == 'Para')
+      idxsortkey = sortkey[1].content
+    end
+
+    -- open the tag
     contents = {pandoc.RawInline('tex', '\\index{')}
-    --
+
+    -- inject the sortkey term
+    if idxsortkey ~= nil then
+      helper.embedTable(contents, idxsortkey)
+      table.insert(contents, pandoc.RawInline('tex', '@'))
+    end
+
+    -- inject the index term
     index = pandoc.read(args[1], 'markdown').blocks
     assert(helper.tableLength(index) == 1)
     assert(index[1].t == 'Para')
-    for _, v in ipairs(index[1].content) do
-      table.insert(contents, v)
-    end
-    --
+    helper.embedTable(contents, index[1].content)
+
+    -- close the tag
     table.insert(contents, pandoc.RawInline('tex', '}'))
 
+    -- inject into AST
     table.insert(collector, pandoc.Para(contents))
 
     return collector
