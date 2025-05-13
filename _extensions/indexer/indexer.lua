@@ -7,7 +7,8 @@ local INDEXER = {}
 INDEXERSETUP = false
 -- What named arguments are allowed in the indexer
 ALLOWEDTERMS = {
-  'idxdisplay', 'idxsortkey', 'idxsee', 'idxnesting', 'idxsuffix'
+  'idxdisplay', 'idxsortkey', 'idxsee', 'idxnesting', 'idxsuffix',
+  'idxstyle'
 }
 
 -- ~~~~~~~~~~ setup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --
@@ -17,6 +18,9 @@ local function ensureLatexDeps()
   quarto.doc.include_text(
     'in-header',
     '\\makeindex')
+  quarto.doc.include_text(
+    'in-header',
+    '\\providecommand{\\defsty}{} \\renewcommand{\\defsty}[1]{\\textcolor{red!50}{\\textbf{#1}}}')
 end
 
 local function ensureHtmlDeps()
@@ -139,6 +143,17 @@ function indexer_add_term(args, kwargs, meta)
       idxsuffix = nil
     end
 
+    -- handle idxstyle if it's provided
+    if type(kwargs['idxstyle']) == 'string'
+       and kwargs['idxstyle'] ~= '' then
+      local style = pandoc.read(kwargs['idxstyle'], 'markdown').blocks
+      assert(helper.tableLength(style) == 1)
+      assert(style[1].t == 'Para')
+      idxstyle = style[1].content
+    else
+      idxstyle = nil
+    end
+
     -- open the tag
     contents = {pandoc.RawInline('tex', '\\index{')}
 
@@ -164,6 +179,12 @@ function indexer_add_term(args, kwargs, meta)
     if idxsuffix ~= nil then
       table.insert(contents, pandoc.RawInline('tex', ', '))
       helper.embedTable(contents, idxsuffix)
+    end
+
+    -- inject styling
+    if idxstyle ~= nil then
+      table.insert(contents, pandoc.RawInline('tex', '|'))
+      helper.embedTable(contents, idxstyle)
     end
 
     -- inject the see term

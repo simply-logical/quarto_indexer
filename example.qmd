@@ -66,6 +66,16 @@ or
 
 Display {{< indexer_add_term Surname idxdisplay='Firstname Surname' idxnesting='names' idxsuffix='Firstnme' >}}, and index it as *Surname* nested under *names*, with a suffix *Firstname*.
 
+## Styling Index
+
+Display {{< indexer add OtherSurname idxdisplay='OtherFirstname OtherSurname' idxnesting='names' idxsuffix='OtherFirstnme' idxstyle=defsty >}}, and index it as *OtherSurname* nested under *names*, with a suffix *OtherFirstname*;
+style it with the default style (`defsty`).
+
+or
+
+Display {{< indexer_add_term OtherSurname idxdisplay='OtherFirstname OtherSurname' idxnesting='names' idxsuffix='OtherFirstnme' idxstyle=defsty >}}, and index it as *OtherSurname* nested under *names*, with a suffix *OtherFirstname*;
+style it with the default style (`defsty`).
+
 ## Printing the Index
 
 {{< indexer_print >}}
