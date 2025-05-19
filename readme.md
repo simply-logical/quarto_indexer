@@ -5,7 +5,7 @@ This extension adds term indexing functionality to quarto.
 ## Installing
 
 ```bash
-quarto add simply-logical/quarto_indexer
+quarto add simply-logical/quarto_indexer@master
 ```
 
 This will install the extension under the `_extensions` subdirectory.
